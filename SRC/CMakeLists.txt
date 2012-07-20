@@ -375,7 +375,7 @@ endif()
 if(BUILD_COMPLEX16)
   set(ALLOBJ  ${ZLASRC} ${ALLAUX} ${DZLAUX})
 endif()
-add_library(lapack ${ALLOBJ} ${ALLXOBJ})
+add_library(lapack STATIC ${ALLOBJ} ${ALLXOBJ})
 target_link_libraries(lapack blas)
 
 install_library(lapack)

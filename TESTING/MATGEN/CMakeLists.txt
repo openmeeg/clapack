@@ -65,5 +65,5 @@ endif()
 if(BUILD_COMPLEX16)
   set(ALLOBJ $(ZMATGEN) $(DZATGEN))
 endif()
-add_library(tmglib ${ALLOBJ} )
+add_library(tmglib STATIC ${ALLOBJ})
 
