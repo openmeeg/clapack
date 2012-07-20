@@ -66,4 +66,4 @@ if(BUILD_COMPLEX16)
   set(ALLOBJ $(ZMATGEN) $(DZATGEN))
 endif()
 add_library(tmglib STATIC ${ALLOBJ})
-
+target_link_libraries(tmglib ${LAPACK_LIBRARIES})
