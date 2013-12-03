@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 project(CLAPACK C)
-enable_testing()
+
+option(CLAPACK_BUILD_TESTING "Build CLAPACK tests" ON)
+
 include(CTest)
 
 if(WIN32 AND NOT CYGWIN)
@@ -11,7 +13,7 @@ else()
   set(SECOND_SRC  ${CLAPACK_SOURCE_DIR}/INSTALL/second.c)
   set(DSECOND_SRC  ${CLAPACK_SOURCE_DIR}/INSTALL/dsecnd.c)
 endif()
-enable_testing()
+
 option(USE_BLAS_WRAP "pre-pend f2c_ to each function in blas" OFF)
 if(NOT USE_BLAS_WRAP)
 # _zrotg_ seems to be missing in the wrap header
@@ -52,7 +54,10 @@ add_subdirectory(INCLUDE)
 add_subdirectory(F2CLIBS)
 add_subdirectory(BLAS)
 add_subdirectory(SRC)
-add_subdirectory(TESTING)
+if (CLAPACK_BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(TESTING)
+endif()
 set(CLAPACK_VERSION 3.2.1)
 set(CPACK_PACKAGE_VERSION_MAJOR 3)
 set(CPACK_PACKAGE_VERSION_MINOR 2)
