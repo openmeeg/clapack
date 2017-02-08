@@ -26,12 +26,12 @@ endif()
 
 # lib install macro
 macro( install_library TARGET_NAME )
-  install(TARGETS ${TARGET_NAME}
-          EXPORT ${PROJECT_NAME} 
-          ARCHIVE DESTINATION ${CLAPACK_INSTALL_LIB_DIR} 
-          LIBRARY DESTINATION ${CLAPACK_INSTALL_LIB_DIR}
-          RUNTIME DESTINATION bin
-  )
+    install(TARGETS ${TARGET_NAME}
+        EXPORT ${PROJECT_NAME} 
+        ARCHIVE DESTINATION ${CLAPACK_INSTALL_LIB_DIR} 
+        LIBRARY DESTINATION ${CLAPACK_INSTALL_LIB_DIR}
+        RUNTIME DESTINATION bin
+        )
 endmacro( install_library )
 
 # set compiler options (run once)
@@ -66,9 +66,27 @@ set(CLAPACK_VERSION 3.2.1)
 set(CPACK_PACKAGE_VERSION_MAJOR 3)
 set(CPACK_PACKAGE_VERSION_MINOR 2)
 set(CPACK_PACKAGE_VERSION_PATCH 1)
+
 include(CPack)
+
 export(TARGETS f2c blas lapack FILE clapack-targets.cmake)
+
 configure_file(${CLAPACK_SOURCE_DIR}/clapack-config-version.cmake.in
   ${CLAPACK_BINARY_DIR}/clapack-config-version.cmake @ONLY)
+
+set(CLAPACK_INCLUDE_DIRECTORIES ${CMAKE_INSTALL_PREFIX}/include)
+set(CLAPACK_LIBRARY_DIRECTORIES ${CMAKE_INSTALL_PREFIX}/${CLAPACK_INSTALL_LIB_DIR})
+set(CLAPACK_LIBRARIES blas lapack f2c)
+
 configure_file(${CLAPACK_SOURCE_DIR}/clapack-config.cmake.in
   ${CLAPACK_BINARY_DIR}/clapack-config.cmake @ONLY)
+
+set(INSTALL_CMAKE_DIR share/cmake/clapack)
+if (WIN32)
+    set(INSTALL_CMAKE_DIR cmake)
+elseif(APPLE)
+    set(INSTALL_CMAKE_DIR .framework/Resources/CMake/)
+endif()
+
+install(FILES ${CLAPACK_BINARY_DIR}/clapack-config.cmake 
+    ${CLAPACK_BINARY_DIR}/clapack-targets.cmake DESTINATION ${INSTALL_CMAKE_DIR})
