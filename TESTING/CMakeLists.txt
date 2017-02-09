@@ -4,22 +4,24 @@ if(MSVC_VERSION)
   string(REGEX REPLACE "(.*)/STACK:(.*) (.*)" "\\1/STACK:900000000000000000 \\3"
     CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 endif()
+
 add_subdirectory(MATGEN)
 add_subdirectory(LIN)
 add_subdirectory(EIG)
+
 macro(add_lapack_test output input target)
   set(TEST_INPUT "${CLAPACK_SOURCE_DIR}/TESTING/${input}")
   set(TEST_OUTPUT "${CLAPACK_BINARY_DIR}/TESTING/${output}")
-  get_target_property(TEST_LOC ${target} LOCATION)
   string(REPLACE "." "_" input_name ${input})
   set(testName "${target}_${input_name}")
   if(EXISTS "${TEST_INPUT}")
-    add_test(${testName} "${CMAKE_COMMAND}"
-      -DTEST=${TEST_LOC}
-      -DINPUT=${TEST_INPUT} 
-      -DOUTPUT=${TEST_OUTPUT} 
-      -DINTDIR=${CMAKE_CFG_INTDIR}
-      -P "${CLAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
+      add_test(NAME ${testName} COMMAND ${CMAKE_COMMAND}
+          -DTEST=$<TARGET_FILE:${target}>
+          -DINPUT=${TEST_INPUT} 
+          -DOUTPUT=${TEST_OUTPUT} 
+          -DINTDIR=${CMAKE_CFG_INTDIR}
+          -P "${CLAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
+      set_tests_properties(${testName} PROPERTIES TIMEOUT 30)
   endif()
 endmacro(add_lapack_test)
 

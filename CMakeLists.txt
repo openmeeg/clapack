@@ -69,17 +69,12 @@ set(CPACK_PACKAGE_VERSION_PATCH 1)
 
 include(CPack)
 
-export(TARGETS f2c blas lapack FILE clapack-targets.cmake)
-
 configure_file(${CLAPACK_SOURCE_DIR}/clapack-config-version.cmake.in
   ${CLAPACK_BINARY_DIR}/clapack-config-version.cmake @ONLY)
 
 set(CLAPACK_INCLUDE_DIRECTORIES ${CMAKE_INSTALL_PREFIX}/include)
 set(CLAPACK_LIBRARY_DIRECTORIES ${CMAKE_INSTALL_PREFIX}/${CLAPACK_INSTALL_LIB_DIR})
 set(CLAPACK_LIBRARIES blas lapack f2c)
-
-configure_file(${CLAPACK_SOURCE_DIR}/clapack-config.cmake.in
-  ${CLAPACK_BINARY_DIR}/clapack-config.cmake @ONLY)
 
 set(INSTALL_CMAKE_DIR share/cmake/clapack)
 if (WIN32)
@@ -88,5 +83,10 @@ elseif(APPLE)
     set(INSTALL_CMAKE_DIR .framework/Resources/CMake/)
 endif()
 
+configure_file(${CLAPACK_SOURCE_DIR}/clapack-config.cmake.in
+  ${CLAPACK_BINARY_DIR}/clapack-config.cmake @ONLY)
+
+install(EXPORT ${PROJECT_NAME} DESTINATION ${INSTALL_CMAKE_DIR})
+
 install(FILES ${CLAPACK_BINARY_DIR}/clapack-config.cmake 
-    ${CLAPACK_BINARY_DIR}/clapack-targets.cmake DESTINATION ${INSTALL_CMAKE_DIR})
+    DESTINATION ${INSTALL_CMAKE_DIR})

@@ -1,5 +1,7 @@
 
 
+include("@CMAKE_INSTALL_PREFIX@/@INSTALL_CMAKE_DIR@/CLAPACK.cmake")
+
 # The CLAPACK include file directories.
 set(CLAPACK_INCLUDE_DIRS "@CLAPACK_INCLUDE_DIRECTORIES@")
 
