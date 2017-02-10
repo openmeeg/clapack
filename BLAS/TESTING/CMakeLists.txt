@@ -26,24 +26,25 @@
 #
 #######################################################################
 
-macro(add_blas_test name src)
+macro(add_blas_test target src)
   get_filename_component(baseNAME ${src} NAME_WE)
   set(TEST_INPUT "${CLAPACK_SOURCE_DIR}/BLAS/${baseNAME}.in")
-  add_executable(${name} ${src})
-  get_target_property(TEST_LOC ${name} LOCATION)
-  target_link_libraries(${name} blas)
+  add_executable(${target} ${src})
+  target_link_libraries(${target} blas)
   if(EXISTS "${TEST_INPUT}")
-    add_test(${name} "${CMAKE_COMMAND}"
-      -DTEST=${TEST_LOC}
-      -DINPUT=${TEST_INPUT}
-      -DINTDIR=${CMAKE_CFG_INTDIR}
-      -P "${CLAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
+      add_test(NAME ${target} COMMAND ${CMAKE_COMMAND}
+          -DTEST=$<TARGET_FILE:${target}>
+          -DINPUT=${TEST_INPUT}
+          -DINTDIR=${CMAKE_CFG_INTDIR}
+          -P "${CLAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
     else()
-      add_test(${name} "${CMAKE_COMMAND}" 
-        -DTEST=${TEST_LOC}
-        -DINTDIR=${CMAKE_CFG_INTDIR}
-        -P "${CLAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
+        add_test(NAME ${target} COMMAND ${CMAKE_COMMAND}
+            -DTEST=$<TARGET_FILE:${target}>
+            -DINTDIR=${CMAKE_CFG_INTDIR}
+            -P "${CLAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
     endif()
+    set_tests_properties(${target} PROPERTIES TIMEOUT 30)
+
 endmacro(add_blas_test)
 
 add_blas_test(xblat1s sblat1.c)
